@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,13 +19,15 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import edu.oregonstate.cs492.viewmodelgithubsearch.data.GitHubRepo
 import edu.oregonstate.cs492.viewmodelgithubsearch.data.GitHubSearchResults
+import edu.oregonstate.cs492.viewmodelgithubsearch.data.GitHubSearchViewModel
 import edu.oregonstate.cs492.viewmodelgithubsearch.data.GitHubService
+import edu.oregonstate.cs492.viewmodelgithubsearch.data.LoadingStatus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
-    private val githubService = GitHubService.create()
+    private val viewModel: GitHubSearchViewModel by viewModels()
     private val adapter = GitHubRepoListAdapter()
 
     private lateinit var searchResultsListRV: RecyclerView
@@ -56,8 +59,42 @@ class MainActivity : AppCompatActivity() {
         searchBtn.setOnClickListener {
             val query = searchBoxET.text.toString()
             if (!TextUtils.isEmpty(query)) {
+                viewModel.loadSearchResults(query)
 //                doRepoSearch(query)
                 searchResultsListRV.scrollToPosition(0)
+            }
+        }
+
+        viewModel.searchResults.observe(this) {
+            searchResults -> adapter.updateRepoList(searchResults)
+        }
+
+        viewModel.loadingStatus.observe(this) {
+            status -> when (status) {
+                LoadingStatus.SUCCESS -> {
+                    searchResultsListRV.visibility = View.VISIBLE
+                    loadingIndicator.visibility = View.INVISIBLE
+                    searchErrorTV.visibility = View.INVISIBLE
+                }
+                LoadingStatus.LOADING -> {
+                    searchResultsListRV.visibility = View.INVISIBLE
+                    loadingIndicator.visibility = View.VISIBLE
+                    searchErrorTV.visibility = View.INVISIBLE
+                }
+                LoadingStatus.ERROR -> {
+                    searchResultsListRV.visibility = View.INVISIBLE
+                    loadingIndicator.visibility = View.INVISIBLE
+                    searchErrorTV.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        viewModel.errorMessage.observe(this) {
+            error -> if (error != null) {
+                searchErrorTV.text = getString(
+                    R.string.search_error,
+                    error
+                )
             }
         }
     }

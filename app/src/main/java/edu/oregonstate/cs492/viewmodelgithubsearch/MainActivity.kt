@@ -70,9 +70,6 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<GitHubSearchResults>, response: Response<GitHubSearchResults>) {
                 loadingIndicator.visibility = View.INVISIBLE
                 if (response.isSuccessful) {
-                    val moshi = Moshi.Builder().build()
-                    val jsonAdapter: JsonAdapter<GitHubSearchResults> =
-                        moshi.adapter(GitHubSearchResults::class.java)
                     adapter.updateRepoList(response.body()?.items)
                     searchResultsListRV.visibility = View.VISIBLE
                 } else {

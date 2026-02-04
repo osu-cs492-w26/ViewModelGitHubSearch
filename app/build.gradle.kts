@@ -44,11 +44,16 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.activity.ktx)
 
     implementation(libs.retrofit2.retrofit)
     implementation(libs.retrofit2.convertermoshi)
 
     implementation(libs.moshi)
+
+    implementation(libs.kotlinx.coroutines.android)
 
     ksp(libs.moshi.codegen)
 

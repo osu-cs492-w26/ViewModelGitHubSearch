@@ -56,36 +56,61 @@ class MainActivity : AppCompatActivity() {
         searchBtn.setOnClickListener {
             val query = searchBoxET.text.toString()
             if (!TextUtils.isEmpty(query)) {
-                doRepoSearch(query)
+//                doRepoSearch(query)
                 searchResultsListRV.scrollToPosition(0)
             }
         }
     }
 
-    private fun doRepoSearch(query: String) {
-        loadingIndicator.visibility = View.VISIBLE
-        searchResultsListRV.visibility = View.INVISIBLE
-        searchErrorTV.visibility = View.INVISIBLE
-        githubService.searchRepositories(query).enqueue(object : Callback<GitHubSearchResults> {
-            override fun onResponse(call: Call<GitHubSearchResults>, response: Response<GitHubSearchResults>) {
-                loadingIndicator.visibility = View.INVISIBLE
-                if (response.isSuccessful) {
-                    adapter.updateRepoList(response.body()?.items)
-                    searchResultsListRV.visibility = View.VISIBLE
-                } else {
-                    searchErrorTV.visibility = View.VISIBLE
-                    searchErrorTV.text = getString(
-                        R.string.search_error,
-                        response.errorBody()?.string() ?: "unknown error"
-                    )
-                }
-            }
+//    private fun doRepoSearch(query: String) {
+//        loadingIndicator.visibility = View.VISIBLE
+//        searchResultsListRV.visibility = View.INVISIBLE
+//        searchErrorTV.visibility = View.INVISIBLE
+//        githubService.searchRepositories(query).enqueue(object : Callback<GitHubSearchResults> {
+//            override fun onResponse(call: Call<GitHubSearchResults>, response: Response<GitHubSearchResults>) {
+//                loadingIndicator.visibility = View.INVISIBLE
+//                if (response.isSuccessful) {
+//                    adapter.updateRepoList(response.body()?.items)
+//                    searchResultsListRV.visibility = View.VISIBLE
+//                } else {
+//                    searchErrorTV.visibility = View.VISIBLE
+//                    searchErrorTV.text = getString(
+//                        R.string.search_error,
+//                        response.errorBody()?.string() ?: "unknown error"
+//                    )
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<GitHubSearchResults>, t: Throwable) {
+//                loadingIndicator.visibility = View.INVISIBLE
+//                searchErrorTV.visibility = View.VISIBLE
+//                searchErrorTV.text = getString(R.string.search_error, t.message)
+//            }
+//        })
+//    }
 
-            override fun onFailure(call: Call<GitHubSearchResults>, t: Throwable) {
-                loadingIndicator.visibility = View.INVISIBLE
-                searchErrorTV.visibility = View.VISIBLE
-                searchErrorTV.text = getString(R.string.search_error, t.message)
-            }
-        })
+    override fun onStart() {
+        super.onStart()
+        Log.d("MainActivity", "onStart()")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("MainActivity", "onResume()")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("MainActivity", "onPause()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("MainActivity", "onStop()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("MainActivity", "onDestroy()")
     }
 }
